@@ -20,7 +20,14 @@ const Kalendar = () => {
   return (
     <KalendarProvider>
       <Actions />
-      <Grid style={{ marginBottom: 8 }}>
+      <Grid
+        style={{
+          marginBottom: 8,
+          color: "#a5a5a5",
+          height: 40,
+          alignItems: "center",
+        }}
+      >
         <DayLabels />
       </Grid>
       <Grid>
@@ -42,7 +49,7 @@ const Grid = ({
       style={{
         display: "grid",
         gridTemplateColumns: "repeat(7, minmax(0, 1fr))",
-        gap: 8,
+        gap: 10,
         ...style,
       }}
     >
@@ -54,7 +61,7 @@ const Grid = ({
 const DayLabels = ({ abbreviation = true }: { abbreviation?: boolean }) => {
   return days.map((day) => (
     <DayLabel
-      day={capitalize(abbreviation ? day.substring(0, 3) : day)}
+      day={capitalize(abbreviation ? day.substring(0, 2) : day)}
       key={day}
     />
   ));
@@ -70,18 +77,47 @@ const Cell = ({ children }: { children: ReactNode }) => {
 
 const DaysGrid = () => {
   const { date } = useKalendar();
-  const blankStartingDays = DaysProvider.getDayMonthStartsOn(date).index;
 
   const dates = useMemo(() => DaysProvider.getDatesForMonth(date), [date]);
-  const blanks = Array.from({ length: blankStartingDays }, () => "");
+
+  const todaysDateIndex: number | null = useMemo(() => {
+    const todaysDate = DaysProvider.getTodaysDate();
+
+    for (let i = 0; i < dates.length; i++) {
+      if (DaysProvider.areDaysTheSame(dates[i], todaysDate)) {
+        return i;
+      }
+    }
+
+    return null;
+  }, [dates]);
 
   return [
-    ...blanks.map((_, i) => <span key={`blank_${i}`} />),
-    ...dates.map((date) => <DayNumber date={date} key={date.toString()} />),
+    ...getBlankDays(date),
+    ...dates.map((date, i) => (
+      <DayNumber
+        date={date}
+        isTodaysDate={todaysDateIndex === i}
+        key={date.toString()}
+      />
+    )),
   ];
 };
 
-const DayNumber = ({ date }: { date: Date }) => {
+const getBlankDays = (date: Date): JSX.Element[] => {
+  const blankStartingDays = DaysProvider.getDayMonthStartsOn(date).index;
+  const blanks = Array.from({ length: blankStartingDays }, () => "");
+
+  return blanks.map((_, i) => <span key={`blank_${i}`} />);
+};
+
+const DayNumber = ({
+  date,
+  isTodaysDate,
+}: {
+  date: Date;
+  isTodaysDate: boolean;
+}) => {
   const { selectedDate, selectDate } = useKalendar();
   const number = date.getDate();
 
@@ -91,21 +127,34 @@ const DayNumber = ({ date }: { date: Date }) => {
   );
 
   const style = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 42,
+    height: 42,
+    fontWeight: 500,
+    padding: 0,
     ...(isDateSelected
       ? { backgroundColor: "black", color: "white" }
+      : isTodaysDate
+      ? { backgroundColor: "#f2f2f2" }
       : { backgroundColor: "transparent" }),
   };
 
+  const dateLabel: string = date.toLocaleDateString("en", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
   return (
-    <Cell>
-      <button
-        onClick={() => selectDate(date)}
-        aria-label={date.toLocaleDateString()}
-        style={style}
-      >
-        {number}
-      </button>
-    </Cell>
+    <button
+      onClick={() => selectDate(date)}
+      aria-label={dateLabel}
+      style={style}
+    >
+      {number}
+    </button>
   );
 };
 
@@ -133,7 +182,7 @@ const Header = () => {
   const monthHeader = date.toLocaleString("en", { month: "long" });
 
   return (
-    <span>
+    <span style={{ fontWeight: 500 }}>
       {monthHeader} {date.getUTCFullYear()}
     </span>
   );
