@@ -126,21 +126,6 @@ const DayNumber = ({
     date
   );
 
-  const style = {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: 42,
-    height: 42,
-    fontWeight: 500,
-    padding: 0,
-    ...(isDateSelected
-      ? { backgroundColor: "black", color: "white" }
-      : isTodaysDate
-      ? { backgroundColor: "#f2f2f2" }
-      : { backgroundColor: "transparent" }),
-  };
-
   const dateLabel: string = date.toLocaleDateString("en", {
     year: "numeric",
     month: "long",
@@ -151,7 +136,9 @@ const DayNumber = ({
     <button
       onClick={() => selectDate(date)}
       aria-label={dateLabel}
-      style={style}
+      className={`btn btn--text ${isDateSelected ? "btn--active" : ""} ${
+        isTodaysDate ? "btn--highlighted" : ""
+      }`}
     >
       {number}
     </button>
@@ -169,9 +156,21 @@ const Actions = () => {
         alignItems: "center",
       }}
     >
-      <button onClick={previousMonth}>{"<"}</button>
+      <button
+        onClick={previousMonth}
+        aria-label="previous month"
+        className="btn btn--default"
+      >
+        {"←"}
+      </button>
       <Header />
-      <button onClick={nextMonth}>{">"}</button>
+      <button
+        onClick={nextMonth}
+        aria-label="next month"
+        className="btn btn--default"
+      >
+        {"→"}
+      </button>
     </div>
   );
 };
