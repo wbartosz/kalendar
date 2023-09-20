@@ -1,7 +1,13 @@
 import { useMemo } from "react";
 import "./App.css";
 import { Day, days } from "./DayTypes";
-import { DaysProvider } from "./DaysProvider";
+import {
+  areDatesTheSame,
+  areDaysTheSame,
+  getDatesForMonth,
+  getDayMonthStartsOn,
+  getTodaysDate,
+} from "./dateUtils";
 import { KalendarProvider, useKalendar } from "./KalendarContext";
 import { capitalize } from "./stringManipulation";
 
@@ -40,13 +46,13 @@ const DayLabel = ({ day }: { day: Day | string }) => {
 const DaysGrid = () => {
   const { date } = useKalendar();
 
-  const dates = useMemo(() => DaysProvider.getDatesForMonth(date), [date]);
+  const dates = useMemo(() => getDatesForMonth(date), [date]);
 
   const todaysDateIndex: number | null = useMemo(() => {
-    const todaysDate = DaysProvider.getTodaysDate();
+    const todaysDate = getTodaysDate();
 
     for (let i = 0; i < dates.length; i++) {
-      if (DaysProvider.areDaysTheSame(dates[i], todaysDate)) {
+      if (areDaysTheSame(dates[i], todaysDate)) {
         return i;
       }
     }
@@ -67,7 +73,7 @@ const DaysGrid = () => {
 };
 
 const getBlankDays = (date: Date): JSX.Element[] => {
-  const blankStartingDays = DaysProvider.getDayMonthStartsOn(date).index;
+  const blankStartingDays = getDayMonthStartsOn(date).index;
   const blanks = Array.from({ length: blankStartingDays }, () => "");
 
   return blanks.map((_, i) => <span key={`blank_${i}`} />);
@@ -83,10 +89,7 @@ const DayNumber = ({
   const { selectedDate, selectDate } = useKalendar();
   const number = date.getDate();
 
-  const isDateSelected = DaysProvider.areDatesTheSame(
-    selectedDate as Date,
-    date
-  );
+  const isDateSelected = areDatesTheSame(selectedDate as Date, date);
 
   const dateLabel: string = date.toLocaleDateString("en", {
     year: "numeric",

@@ -1,5 +1,10 @@
 import { ReactElement, createContext, useContext, useState } from "react";
-import { DaysProvider } from "./DaysProvider";
+import {
+  areDatesTheSame,
+  getNextMonth,
+  getPreviousMonth,
+  getTodaysDate,
+} from "./dateUtils";
 
 type KalendarContext = {
   date: Date;
@@ -10,7 +15,7 @@ type KalendarContext = {
 };
 
 const defaultDateContextState: KalendarContext = {
-  date: DaysProvider.getTodaysDate(),
+  date: getTodaysDate(),
   selectedDate: null,
   previousMonth: undefined as unknown as () => void,
   nextMonth: undefined as unknown as () => void,
@@ -42,18 +47,17 @@ export const KalendarProvider = ({
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const previousMonth = () => {
-    setDate((date) => DaysProvider.getPreviousMonth(date));
+    setDate((date) => getPreviousMonth(date));
   };
 
   const nextMonth = () => {
-    setDate((date) => DaysProvider.getNextMonth(date));
+    setDate((date) => getNextMonth(date));
   };
 
   const selectDate = (date: Date) => {
     setSelectedDate((previousDate) => {
       const shouldSelectDate =
-        previousDate === null ||
-        !DaysProvider.areDatesTheSame(previousDate, date);
+        previousDate === null || !areDatesTheSame(previousDate, date);
 
       return shouldSelectDate ? date : null;
     });
