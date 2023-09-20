@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, DetailedHTMLProps, useMemo } from "react";
+import { useMemo } from "react";
 import "./App.css";
 import { Day, days } from "./DayTypes";
 import {
@@ -10,6 +10,7 @@ import {
 } from "./dateUtils";
 import { KalendarProvider, useKalendar } from "./KalendarContext";
 import { capitalize } from "./stringManipulation";
+import { Button } from "./Button/Button";
 
 function App() {
   return <Kalendar />;
@@ -146,21 +147,3 @@ const HeaderButton = () => {
 };
 
 export default App;
-
-type ButtonProps = DetailedHTMLProps<
-  ButtonHTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
-> & { use?: "default" | "primary" | "text" };
-
-const Button = ({
-  children,
-  use = "default",
-  className,
-  ...props
-}: ButtonProps) => {
-  return (
-    <button className={`btn btn--${use} ${className}`} {...props}>
-      {children}
-    </button>
-  );
-};

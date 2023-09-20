@@ -5,52 +5,6 @@
   text-align: center;
 }
 
-.btn {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 40px;
-  padding: 0 12px;
-}
-
-.btn--default {
-  background-color: white;
-  color: #6e6e6e;
-  border: 1px solid #ddd;
-  transition: none;
-}
-
-.btn--default:hover {
-  border-color: #c3c3c3;
-}
-
-.btn--default:active,
-.btn--default:focus {
-  outline: none;
-  border-color: #a1a1a1;
-}
-
-.btn--text {
-  background-color: transparent;
-  color: black;
-  transition: background-color 0.25s ease;
-}
-
-.btn--active {
-  background-color: black !important;
-  color: white;
-  transition: none;
-}
-
-.btn--text:hover {
-  background-color: #f2f2f2;
-  border-color: #f2f2f2;
-}
-
-.btn--highlighted {
-  background-color: #f2f2f2;
-}
-
 .grid {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
