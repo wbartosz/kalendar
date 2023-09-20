@@ -1,11 +1,4 @@
-import {
-  cloneElement,
-  Children,
-  ReactElement,
-  CSSProperties,
-  ReactNode,
-  useMemo,
-} from "react";
+import { useMemo } from "react";
 import "./App.css";
 import { Day, days } from "./DayTypes";
 import { DaysProvider } from "./DaysProvider";
@@ -20,41 +13,14 @@ const Kalendar = () => {
   return (
     <KalendarProvider>
       <Actions />
-      <Grid
-        style={{
-          marginBottom: 8,
-          color: "#a5a5a5",
-          height: 40,
-          alignItems: "center",
-        }}
-      >
+      <div className="grid grid__week">
         <DayLabels />
-      </Grid>
-      <Grid>
-        <DaysGrid />
-      </Grid>
-    </KalendarProvider>
-  );
-};
+      </div>
 
-const Grid = ({
-  children,
-  style,
-}: {
-  children: ReactElement | ReactElement[];
-  style?: CSSProperties;
-}) => {
-  return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(7, minmax(0, 1fr))",
-        gap: 10,
-        ...style,
-      }}
-    >
-      {Children.map(children, (child) => cloneElement(child))}
-    </div>
+      <div className="grid">
+        <DaysGrid />
+      </div>
+    </KalendarProvider>
   );
 };
 
@@ -68,11 +34,7 @@ const DayLabels = ({ abbreviation = true }: { abbreviation?: boolean }) => {
 };
 
 const DayLabel = ({ day }: { day: Day | string }) => {
-  return <Cell>{day}</Cell>;
-};
-
-const Cell = ({ children }: { children: ReactNode }) => {
-  return <span>{children}</span>;
+  return <div className="day__label">{day}</div>;
 };
 
 const DaysGrid = () => {

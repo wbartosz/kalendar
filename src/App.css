@@ -50,3 +50,17 @@
 .btn--highlighted {
   background-color: #f2f2f2;
 }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.grid__week {
+  margin-bottom: 8px;
+  color: #a5a5a5;
+  height: 40px;
+  align-items: center;
+  text-align: center;
+}
