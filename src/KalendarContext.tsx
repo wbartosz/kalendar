@@ -39,12 +39,20 @@ export const useKalendar = () => {
 };
 
 export const KalendarProvider = ({
+  date: providedDate,
   children,
 }: {
+  date?: Date;
   children: ReactElement | ReactElement[];
 }) => {
-  const [date, setDate] = useState<Date>(defaultDateContextState.date);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [date, setDate] = useState<Date>(
+    providedDate ?? defaultDateContextState.date
+  );
+  const [selectedDate, setSelectedDate] = useState<Date | null>(
+    providedDate ?? null
+  );
+
+  console.log("selected", selectedDate);
 
   const previousMonth = () => {
     setDate((date) => getPreviousMonth(date));

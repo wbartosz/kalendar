@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import "./App.css";
 import { Day, days } from "./DayTypes";
 import {
-  areDatesTheSame,
   areDaysTheSame,
   getDatesForMonth,
   getDayMonthStartsOn,
@@ -16,9 +15,9 @@ function App() {
   return <Kalendar />;
 }
 
-const Kalendar = () => {
+const Kalendar = ({ date }: { date?: Date }) => {
   return (
-    <KalendarProvider>
+    <KalendarProvider date={date}>
       <Actions />
       <div className="grid grid__week">
         <DayLabels />
@@ -90,7 +89,7 @@ const DayNumber = ({
   const { selectedDate, selectDate } = useKalendar();
   const number = date.getDate();
 
-  const isDateSelected = areDatesTheSame(selectedDate as Date, date);
+  const isDateSelected = areDaysTheSame(selectedDate as Date, date);
 
   const dateLabel: string = date.toLocaleDateString("en", {
     year: "numeric",
