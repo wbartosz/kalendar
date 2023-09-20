@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { ButtonHTMLAttributes, DetailedHTMLProps, useMemo } from "react";
 import "./App.css";
 import { Day, days } from "./DayTypes";
 import {
@@ -98,15 +98,16 @@ const DayNumber = ({
   });
 
   return (
-    <button
+    <Button
+      use="text"
       onClick={() => selectDate(date)}
       aria-label={dateLabel}
-      className={`btn btn--text ${isDateSelected ? "btn--active" : ""} ${
+      className={`${isDateSelected ? "btn--active" : ""} ${
         isTodaysDate ? "btn--highlighted" : ""
       }`}
     >
       {number}
-    </button>
+    </Button>
   );
 };
 
@@ -121,21 +122,13 @@ const Actions = () => {
         alignItems: "center",
       }}
     >
-      <button
-        onClick={previousMonth}
-        aria-label="previous month"
-        className="btn btn--default"
-      >
+      <Button onClick={previousMonth} aria-label="previous month">
         {"←"}
-      </button>
+      </Button>
       <HeaderButton />
-      <button
-        onClick={nextMonth}
-        aria-label="next month"
-        className="btn btn--default"
-      >
+      <Button onClick={nextMonth} aria-label="next month">
         {"→"}
-      </button>
+      </Button>
     </div>
   );
 };
@@ -146,10 +139,28 @@ const HeaderButton = () => {
   const monthHeader = date.toLocaleString("en", { month: "long" });
 
   return (
-    <button className="btn btn--text">
+    <Button use="text">
       {monthHeader} {date.getUTCFullYear()}
-    </button>
+    </Button>
   );
 };
 
 export default App;
+
+type ButtonProps = DetailedHTMLProps<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
+> & { use?: "default" | "primary" | "text" };
+
+const Button = ({
+  children,
+  use = "default",
+  className,
+  ...props
+}: ButtonProps) => {
+  return (
+    <button className={`btn btn--${use} ${className}`} {...props}>
+      {children}
+    </button>
+  );
+};
