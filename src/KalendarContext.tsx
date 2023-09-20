@@ -52,8 +52,6 @@ export const KalendarProvider = ({
     providedDate ?? null
   );
 
-  console.log("selected", selectedDate);
-
   const previousMonth = () => {
     setDate((date) => getPreviousMonth(date));
   };
