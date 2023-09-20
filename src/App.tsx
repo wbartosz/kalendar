@@ -163,7 +163,7 @@ const Actions = () => {
       >
         {"←"}
       </button>
-      <Header />
+      <HeaderButton />
       <button
         onClick={nextMonth}
         aria-label="next month"
@@ -175,15 +175,15 @@ const Actions = () => {
   );
 };
 
-const Header = () => {
+const HeaderButton = () => {
   const { date } = useKalendar();
 
   const monthHeader = date.toLocaleString("en", { month: "long" });
 
   return (
-    <span style={{ fontWeight: 500 }}>
+    <button className="btn btn--text">
       {monthHeader} {date.getUTCFullYear()}
-    </span>
+    </button>
   );
 };
 

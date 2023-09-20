@@ -9,31 +9,44 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 8px 13px;
+  height: 40px;
+  padding: 0 12px;
 }
 
 .btn--default {
-  background: white;
+  background-color: white;
   color: #6e6e6e;
   border: 1px solid #ddd;
-}
-
-.btn--text {
-  background: transparent;
-  color: black;
   transition: none;
 }
 
+.btn--default:hover {
+  border-color: #c3c3c3;
+}
+
+.btn--default:active,
+.btn--default:focus {
+  outline: none;
+  border-color: #a1a1a1;
+}
+
+.btn--text {
+  background-color: transparent;
+  color: black;
+  transition: background-color 0.25s ease;
+}
+
 .btn--active {
-  background: black !important;
+  background-color: black !important;
   color: white;
+  transition: none;
 }
 
 .btn--text:hover {
-  background: #f2f2f2;
+  background-color: #f2f2f2;
   border-color: #f2f2f2;
 }
 
 .btn--highlighted {
-  background: #f2f2f2;
+  background-color: #f2f2f2;
 }
