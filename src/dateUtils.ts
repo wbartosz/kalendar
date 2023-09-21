@@ -1,5 +1,3 @@
-import { Day, days } from "./DayTypes";
-
 export function getDaysInMonth(date: Date = getTodaysDate()): number {
   return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
 }
@@ -8,17 +6,14 @@ export function getTodaysDate(): Date {
   return new Date();
 }
 
-export function getDayMonthStartsOn(date: Date = getTodaysDate()): {
-  day: Day;
-  index: number;
-} {
-  const firstDayOfTheMonth = getFirstDayOfTheMonthDate(date);
-  const index = firstDayOfTheMonth.getDay() - 1;
+function shiftStartIndexFromSundayToMonday(day: number): number {
+  return (day + 6) % 7;
+}
 
-  return {
-    day: days[index],
-    index,
-  };
+export function getDayIndexMonthStartsOn(date: Date = getTodaysDate()): number {
+  const firstDayOfTheMonth = getFirstDayOfTheMonthDate(date);
+
+  return shiftStartIndexFromSundayToMonday(firstDayOfTheMonth.getDay());
 }
 
 export function getDatesForMonth(date: Date): Date[] {

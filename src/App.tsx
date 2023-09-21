@@ -4,7 +4,7 @@ import { Day, days } from "./DayTypes";
 import {
   areDaysTheSame,
   getDatesForMonth,
-  getDayMonthStartsOn,
+  getDayIndexMonthStartsOn,
   getTodaysDate,
 } from "./dateUtils";
 import { KalendarProvider, useKalendar } from "./KalendarContext";
@@ -77,7 +77,7 @@ const DaysGrid = () => {
 };
 
 const getBlankDays = (date: Date): JSX.Element[] => {
-  const blankStartingDays = getDayMonthStartsOn(date).index;
+  const blankStartingDays = getDayIndexMonthStartsOn(date);
   const blanks = Array.from({ length: blankStartingDays }, () => "");
 
   return blanks.map((_, i) => <span key={`blank_${i}`} />);
