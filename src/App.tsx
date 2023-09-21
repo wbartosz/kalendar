@@ -12,14 +12,18 @@ import { capitalize } from "./stringManipulation";
 import { Button } from "./Button/Button";
 
 function App() {
-  return <Kalendar />;
+  return <Kalendar size="small" />;
 }
 
-const Kalendar = ({ date }: { date?: Date }) => {
+export type Size = "default" | "small";
+
+const Kalendar = ({ date, size = "default" }: { date?: Date; size?: Size }) => {
+  const smallClassName = size === "small" ? "grid__week--small" : "";
+
   return (
-    <KalendarProvider date={date}>
+    <KalendarProvider date={date} size={size}>
       <Actions />
-      <div className="grid grid__week">
+      <div className={`grid grid__week ${smallClassName}`}>
         <DayLabels />
       </div>
 
@@ -86,7 +90,7 @@ const DayNumber = ({
   date: Date;
   isTodaysDate: boolean;
 }) => {
-  const { selectedDate, selectDate } = useKalendar();
+  const { selectedDate, selectDate, size } = useKalendar();
   const number = date.getDate();
 
   const isDateSelected = areDaysTheSame(selectedDate as Date, date);
@@ -100,6 +104,7 @@ const DayNumber = ({
   return (
     <Button
       use="text"
+      size={size}
       onClick={() => selectDate(date)}
       aria-label={dateLabel}
       className={`${isDateSelected ? "btn--active" : ""} ${
@@ -112,7 +117,7 @@ const DayNumber = ({
 };
 
 const Actions = () => {
-  const { previousMonth, nextMonth } = useKalendar();
+  const { previousMonth, nextMonth, size } = useKalendar();
 
   return (
     <div
@@ -122,11 +127,11 @@ const Actions = () => {
         alignItems: "center",
       }}
     >
-      <Button onClick={previousMonth} aria-label="previous month">
+      <Button onClick={previousMonth} aria-label="previous month" size={size}>
         {"←"}
       </Button>
       <HeaderButton />
-      <Button onClick={nextMonth} aria-label="next month">
+      <Button onClick={nextMonth} aria-label="next month" size={size}>
         {"→"}
       </Button>
     </div>
@@ -134,12 +139,12 @@ const Actions = () => {
 };
 
 const HeaderButton = () => {
-  const { date } = useKalendar();
+  const { date, size } = useKalendar();
 
   const monthHeader = date.toLocaleString("en", { month: "long" });
 
   return (
-    <Button use="text">
+    <Button use="text" size={size}>
       {monthHeader} {date.getUTCFullYear()}
     </Button>
   );

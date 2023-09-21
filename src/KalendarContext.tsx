@@ -5,10 +5,12 @@ import {
   getPreviousMonth,
   getTodaysDate,
 } from "./dateUtils";
+import { Size } from "./App";
 
 type KalendarContext = {
   date: Date;
   selectedDate: Date | null;
+  size: Size;
   previousMonth: () => void;
   nextMonth: () => void;
   selectDate: (date: Date) => void;
@@ -17,6 +19,7 @@ type KalendarContext = {
 const defaultDateContextState: KalendarContext = {
   date: getTodaysDate(),
   selectedDate: null,
+  size: "default",
   previousMonth: undefined as unknown as () => void,
   nextMonth: undefined as unknown as () => void,
   selectDate: undefined as unknown as (date: Date) => void,
@@ -40,9 +43,11 @@ export const useKalendar = () => {
 
 export const KalendarProvider = ({
   date: providedDate,
+  size,
   children,
 }: {
   date?: Date;
+  size: Size;
   children: ReactElement | ReactElement[];
 }) => {
   const [date, setDate] = useState<Date>(
@@ -71,7 +76,7 @@ export const KalendarProvider = ({
 
   return (
     <KalendarContext.Provider
-      value={{ date, selectedDate, previousMonth, nextMonth, selectDate }}
+      value={{ date, selectedDate, size, previousMonth, nextMonth, selectDate }}
     >
       {children}
     </KalendarContext.Provider>

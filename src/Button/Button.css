@@ -1,9 +1,20 @@
+:root {
+  --button-height-default: 34px;
+  --button-height-small: 28px;
+}
+
 .btn {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 40px;
+  height: var(--button-height-default);
+  font-size: var(--font-size-default);
   padding: 0 12px;
+}
+
+.btn--small {
+  height: var(--button-height-small);
+  font-size: var(--font-size-small);
 }
 
 .btn--default {

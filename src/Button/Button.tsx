@@ -4,16 +4,25 @@ import "./Button.css";
 type ButtonProps = DetailedHTMLProps<
   ButtonHTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement
-> & { use?: "default" | "primary" | "text" };
+> & {
+  use?: "default" | "primary" | "text";
+  size?: "default" | "small";
+};
 
 export const Button = ({
   children,
   use = "default",
-  className,
+  size = "default",
+  className = "",
   ...props
 }: ButtonProps) => {
+  const smallClassName = size === "small" ? "btn--small" : "";
+
   return (
-    <button className={`btn btn--${use} ${className}`} {...props}>
+    <button
+      className={`btn ${smallClassName} btn--${use} ${className}`}
+      {...props}
+    >
       {children}
     </button>
   );
