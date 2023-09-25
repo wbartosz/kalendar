@@ -1,33 +1,21 @@
 import { ReactElement, createContext, useContext, useState } from "react";
+import { KalendarProps } from "./App";
 import {
   areDatesTheSame,
   getNextMonth,
   getPreviousMonth,
   getTodaysDate,
 } from "./dateUtils";
-import { Size } from "./App";
 
-type KalendarContext = {
-  date: Date;
-  selectedDate: Date | null;
-  size: Size;
+type KalendarContext = Required<
+  Pick<KalendarProps, "value" | "date" | "size">
+> & {
   previousMonth: () => void;
   nextMonth: () => void;
   selectDate: (date: Date) => void;
 };
 
-const defaultDateContextState: KalendarContext = {
-  date: getTodaysDate(),
-  selectedDate: null,
-  size: "default",
-  previousMonth: undefined as unknown as () => void,
-  nextMonth: undefined as unknown as () => void,
-  selectDate: undefined as unknown as (date: Date) => void,
-};
-
-const KalendarContext = createContext<KalendarContext | undefined>(
-  defaultDateContextState
-);
+const KalendarContext = createContext<KalendarContext | undefined>(undefined);
 
 export const useKalendar = () => {
   const context = useContext(KalendarContext);
@@ -41,21 +29,18 @@ export const useKalendar = () => {
   return context;
 };
 
-export const KalendarProvider = ({
-  date: providedDate,
-  size,
-  children,
-}: {
-  date?: Date;
-  size: Size;
+type KalendarProviderProps = KalendarProps & {
   children: ReactElement | ReactElement[];
-}) => {
-  const [date, setDate] = useState<Date>(
-    providedDate ?? defaultDateContextState.date
-  );
-  const [selectedDate, setSelectedDate] = useState<Date | null>(
-    providedDate ?? null
-  );
+};
+
+export const KalendarProvider = ({
+  value,
+  onChange,
+  date: providedDate = getTodaysDate(),
+  size = "default",
+  children,
+}: KalendarProviderProps) => {
+  const [date, setDate] = useState<Date>(providedDate);
 
   const previousMonth = () => {
     setDate((date) => getPreviousMonth(date));
@@ -66,7 +51,7 @@ export const KalendarProvider = ({
   };
 
   const selectDate = (date: Date) => {
-    setSelectedDate((previousDate) => {
+    onChange((previousDate) => {
       const shouldSelectDate =
         previousDate === null || !areDatesTheSame(previousDate, date);
 
@@ -76,7 +61,14 @@ export const KalendarProvider = ({
 
   return (
     <KalendarContext.Provider
-      value={{ date, selectedDate, size, previousMonth, nextMonth, selectDate }}
+      value={{
+        value,
+        date,
+        size,
+        previousMonth,
+        nextMonth,
+        selectDate,
+      }}
     >
       {children}
     </KalendarContext.Provider>

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import "./App.css";
 import { Day, days } from "./DayTypes";
 import {
@@ -12,16 +12,29 @@ import { capitalize } from "./stringManipulation";
 import { Button } from "./Button/Button";
 
 function App() {
-  return <Kalendar size="small" />;
+  const [date, setDate] = useState<Date | null>(null);
+
+  return <Kalendar value={date} onChange={setDate} size="small" />;
 }
+
+export type Value = Date | null;
 
 export type Size = "default" | "small";
 
-const Kalendar = ({ date, size = "default" }: { date?: Date; size?: Size }) => {
-  const smallClassName = size === "small" ? "grid__week--small" : "";
+export type KalendarProps = {
+  value: Date | null;
+  onChange: React.Dispatch<React.SetStateAction<Value>>;
+  date?: Date;
+  size?: Size;
+};
+
+const Kalendar = (kalendarProps: KalendarProps) => {
+  const props = { size: "default" as const, ...kalendarProps };
+
+  const smallClassName = props.size === "small" ? "grid__week--small" : "";
 
   return (
-    <KalendarProvider date={date} size={size}>
+    <KalendarProvider {...props}>
       <Actions />
       <div className={`grid grid__week ${smallClassName}`}>
         <DayLabels />
@@ -90,10 +103,10 @@ const DayNumber = ({
   date: Date;
   isTodaysDate: boolean;
 }) => {
-  const { selectedDate, selectDate, size } = useKalendar();
+  const { value, selectDate, size } = useKalendar();
   const number = date.getDate();
 
-  const isDateSelected = areDaysTheSame(selectedDate as Date, date);
+  const isDateSelected = areDaysTheSame(value as Date, date);
 
   const dateLabel: string = date.toLocaleDateString("en", {
     year: "numeric",
