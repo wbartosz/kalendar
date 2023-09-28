@@ -66,7 +66,7 @@ export function areDaysTheSame(date1: Date, date2: Date): boolean {
   );
 }
 
-export function getWeekDays(locale?: Intl.LocalesArgument) {
+export function getWeekDays(locale?: Intl.LocalesArgument): string[] {
   const mondayIndex = 2;
   const randomMonday = new Date(Date.UTC(2023, 0, mondayIndex));
   const weekDays: string[] = [];
