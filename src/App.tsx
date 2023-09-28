@@ -15,7 +15,7 @@ import { Button } from "./Button/Button";
 function App() {
   const [date, setDate] = useState<Date | null>(null);
 
-  return <Kalendar value={date} onChange={setDate} locale="en" size="small" />;
+  return <Kalendar value={date} onChange={setDate} size="small" />;
 }
 
 export type Value = Date | null;

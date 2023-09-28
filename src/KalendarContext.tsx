@@ -38,7 +38,7 @@ export const KalendarProvider = ({
   onChange,
   date: providedDate = getTodaysDate(),
   size = "default",
-  locale = "en",
+  locale = getPreferredLanguage() ?? "en",
   children,
 }: KalendarProviderProps) => {
   const [date, setDate] = useState<Date>(providedDate);
@@ -75,4 +75,12 @@ export const KalendarProvider = ({
       {children}
     </KalendarContext.Provider>
   );
+};
+
+const getPreferredLanguage = () => {
+  if (navigator.languages !== undefined) {
+    return navigator.languages[0];
+  }
+
+  return navigator.language;
 };
