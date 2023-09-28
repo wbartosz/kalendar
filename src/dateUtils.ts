@@ -65,3 +65,16 @@ export function areDaysTheSame(date1: Date, date2: Date): boolean {
     date1?.getDate() === date2?.getDate()
   );
 }
+
+export function getWeekDays(locale?: Intl.LocalesArgument) {
+  const mondayIndex = 2;
+  const randomMonday = new Date(Date.UTC(2023, 0, mondayIndex));
+  const weekDays: string[] = [];
+
+  for (let i = 0; i < 7; i++) {
+    const weekDay = new Date(randomMonday.setDate(mondayIndex + i));
+    weekDays.push(weekDay.toLocaleString(locale, { weekday: "long" }));
+  }
+
+  return weekDays;
+}

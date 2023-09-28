@@ -1,11 +1,12 @@
 import { useMemo, useState } from "react";
 import "./App.css";
-import { Day, days } from "./DayTypes";
+import { Day } from "./DayTypes";
 import {
   areDaysTheSame,
   getDatesForMonth,
   getDayIndexMonthStartsOn,
   getTodaysDate,
+  getWeekDays,
 } from "./dateUtils";
 import { KalendarProvider, useKalendar } from "./KalendarContext";
 import { capitalize } from "./stringManipulation";
@@ -14,7 +15,7 @@ import { Button } from "./Button/Button";
 function App() {
   const [date, setDate] = useState<Date | null>(null);
 
-  return <Kalendar value={date} onChange={setDate} size="small" />;
+  return <Kalendar value={date} onChange={setDate} locale="en" size="small" />;
 }
 
 export type Value = Date | null;
@@ -26,11 +27,10 @@ export type KalendarProps = {
   onChange: React.Dispatch<React.SetStateAction<Value>>;
   date?: Date;
   size?: Size;
+  locale?: Intl.LocalesArgument;
 };
 
-const Kalendar = (kalendarProps: KalendarProps) => {
-  const props = { size: "default" as const, ...kalendarProps };
-
+const Kalendar = (props: KalendarProps) => {
   const smallClassName = props.size === "small" ? "grid__week--small" : "";
 
   return (
@@ -47,17 +47,18 @@ const Kalendar = (kalendarProps: KalendarProps) => {
   );
 };
 
-const DayLabels = ({ abbreviation = true }: { abbreviation?: boolean }) => {
-  return days.map((day) => (
-    <DayLabel
-      day={capitalize(abbreviation ? day.substring(0, 2) : day)}
-      key={day}
-    />
+const DayLabels = () => {
+  const { locale } = useKalendar();
+
+  const weekDays = useMemo(() => getWeekDays(locale), [locale]);
+
+  return weekDays.map((day) => (
+    <DayLabel day={day.substring(0, 2)} key={day} />
   ));
 };
 
 const DayLabel = ({ day }: { day: Day | string }) => {
-  return <div className="day__label">{day}</div>;
+  return <div>{day}</div>;
 };
 
 const DaysGrid = () => {
@@ -103,12 +104,12 @@ const DayNumber = ({
   date: Date;
   isTodaysDate: boolean;
 }) => {
-  const { value, selectDate, size } = useKalendar();
+  const { value, selectDate, size, locale } = useKalendar();
   const number = date.getDate();
 
   const isDateSelected = areDaysTheSame(value as Date, date);
 
-  const dateLabel: string = date.toLocaleDateString("en", {
+  const dateLabel: string = date.toLocaleDateString(locale, {
     year: "numeric",
     month: "long",
     day: "numeric",
@@ -152,9 +153,11 @@ const Actions = () => {
 };
 
 const HeaderButton = () => {
-  const { date, size } = useKalendar();
+  const { date, size, locale } = useKalendar();
 
-  const monthHeader = date.toLocaleString("en", { month: "long" });
+  const monthHeader = capitalize(
+    date.toLocaleString(locale, { month: "long" })
+  );
 
   return (
     <Button use="text" size={size}>

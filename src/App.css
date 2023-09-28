@@ -21,8 +21,9 @@
   color: #a5a5a5;
   height: 40px;
   align-items: center;
-  text-align: center;
   font-size: var(--font-size-default);
+  text-align: center;
+  text-transform: capitalize;
 }
 
 .grid__week--small {

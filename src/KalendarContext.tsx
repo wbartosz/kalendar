@@ -8,7 +8,7 @@ import {
 } from "./dateUtils";
 
 type KalendarContext = Required<
-  Pick<KalendarProps, "value" | "date" | "size">
+  Pick<KalendarProps, "value" | "date" | "size" | "locale">
 > & {
   previousMonth: () => void;
   nextMonth: () => void;
@@ -38,6 +38,7 @@ export const KalendarProvider = ({
   onChange,
   date: providedDate = getTodaysDate(),
   size = "default",
+  locale = "en",
   children,
 }: KalendarProviderProps) => {
   const [date, setDate] = useState<Date>(providedDate);
@@ -65,6 +66,7 @@ export const KalendarProvider = ({
         value,
         date,
         size,
+        locale,
         previousMonth,
         nextMonth,
         selectDate,
