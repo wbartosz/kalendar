@@ -47,9 +47,28 @@ export function subtractMonths(date: Date, months: number): Date {
 }
 
 export function addMonths(date: Date, months: number): Date {
+  return add(date, months, "month");
+}
+
+export function add(
+  date: Date = getTodaysDate(),
+  amount: number,
+  type: "day" | "days" | "month" | "months"
+): Date {
   const newDate = new Date(date);
 
-  newDate.setMonth(newDate.getMonth() + months);
+  switch (type) {
+    case "month":
+    case "months": {
+      newDate.setMonth(newDate.getMonth() + amount);
+      break;
+    }
+    case "day":
+    case "days": {
+      newDate.setDate(newDate.getDate() + amount);
+      break;
+    }
+  }
 
   return newDate;
 }

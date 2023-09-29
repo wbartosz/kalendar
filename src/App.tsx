@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import "./App.css";
 import { Day } from "./DayTypes";
 import {
+  add,
   areDaysTheSame,
   getDatesForMonth,
   getDayIndexMonthStartsOn,
@@ -15,7 +16,14 @@ import { Button } from "./Button/Button";
 function App() {
   const [date, setDate] = useState<Date | null>(null);
 
-  return <Kalendar value={date} onChange={setDate} size="small" />;
+  return (
+    <Kalendar
+      value={date}
+      onChange={setDate}
+      size="small"
+      showSuggestedActions
+    />
+  );
 }
 
 export type Value = Date | null;
@@ -28,13 +36,16 @@ export type KalendarProps = {
   date?: Date;
   size?: Size;
   locale?: Intl.LocalesArgument;
+  showSuggestedActions?: boolean;
 };
 
 const Kalendar = (props: KalendarProps) => {
+  const { showSuggestedActions = false } = props;
   const smallClassName = props.size === "small" ? "grid__week--small" : "";
 
   return (
     <KalendarProvider {...props}>
+      {showSuggestedActions ? <SuggestedActions /> : null}
       <Actions />
       <div className={`grid grid__week ${smallClassName}`}>
         <DayLabels />
@@ -147,6 +158,31 @@ const Actions = () => {
       <HeaderButton />
       <Button onClick={nextMonth} aria-label="next month" size={size}>
         {"→"}
+      </Button>
+    </div>
+  );
+};
+
+const SuggestedActions = () => {
+  const { selectDate, size } = useKalendar();
+  const today = getTodaysDate();
+
+  const selectToday = () => selectDate(today);
+  const selectTomorrow = () => selectDate(add(today, 1, "day"));
+  const in2days = () => selectDate(add(today, 2, "days"));
+
+  const props = { size };
+
+  return (
+    <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+      <Button {...props} onClick={selectToday}>
+        Today
+      </Button>
+      <Button {...props} onClick={selectTomorrow}>
+        Tomorrow
+      </Button>
+      <Button {...props} onClick={in2days}>
+        In 2 days
       </Button>
     </div>
   );

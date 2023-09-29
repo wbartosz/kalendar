@@ -1,7 +1,7 @@
 import { ReactElement, createContext, useContext, useState } from "react";
 import { KalendarProps } from "./App";
 import {
-  areDatesTheSame,
+  areDaysTheSame,
   getNextMonth,
   getPreviousMonth,
   getTodaysDate,
@@ -30,7 +30,7 @@ export const useKalendar = () => {
 };
 
 type KalendarProviderProps = KalendarProps & {
-  children: ReactElement | ReactElement[];
+  children: ReactElement | (ReactElement | null)[];
 };
 
 export const KalendarProvider = ({
@@ -54,7 +54,7 @@ export const KalendarProvider = ({
   const selectDate = (date: Date) => {
     onChange((previousDate) => {
       const shouldSelectDate =
-        previousDate === null || !areDatesTheSame(previousDate, date);
+        previousDate === null || !areDaysTheSame(previousDate, date);
 
       return shouldSelectDate ? date : null;
     });
