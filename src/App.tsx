@@ -22,6 +22,7 @@ function App() {
       onChange={setDate}
       size="small"
       showSuggestedActions
+      displayedMonths={2}
     />
   );
 }
@@ -30,6 +31,8 @@ export type Value = Date | null;
 
 export type Size = "default" | "small";
 
+type DisplayedMonths = 1 | 2;
+
 export type KalendarProps = {
   value: Date | null;
   onChange: React.Dispatch<React.SetStateAction<Value>>;
@@ -37,28 +40,48 @@ export type KalendarProps = {
   size?: Size;
   locale?: Intl.LocalesArgument;
   showSuggestedActions?: boolean;
+  displayedMonths?: DisplayedMonths;
 };
 
 const Kalendar = (props: KalendarProps) => {
-  const { showSuggestedActions = false } = props;
-  const smallClassName = props.size === "small" ? "grid__week--small" : "";
+  const { displayedMonths = 1, showSuggestedActions = false } = props;
 
   return (
     <KalendarProvider {...props}>
       {showSuggestedActions ? <SuggestedActions /> : null}
-      <Actions />
-      <div className={`grid grid__week ${smallClassName}`}>
-        <DayLabels />
-      </div>
 
-      <div className="grid">
-        <DaysGrid />
-      </div>
+      <MonthView displayedMonths={displayedMonths} />
     </KalendarProvider>
   );
 };
 
-const DayLabels = () => {
+const MonthView = ({
+  displayedMonths,
+}: {
+  displayedMonths: DisplayedMonths;
+}) => {
+  const { date } = useKalendar();
+  const showAllNavigationButtons = displayedMonths === 1;
+
+  return (
+    <div style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
+      <MonthGrid
+        date={date}
+        showPreviousMonth
+        showNextMonth={showAllNavigationButtons}
+      />
+      {displayedMonths === 2 && (
+        <MonthGrid
+          date={add(date, 1, "month")}
+          showPreviousMonth={showAllNavigationButtons}
+          showNextMonth
+        />
+      )}
+    </div>
+  );
+};
+
+const WeekDays = () => {
   const { locale } = useKalendar();
 
   const weekDays = useMemo(() => getWeekDays(locale), [locale]);
@@ -72,8 +95,16 @@ const DayLabel = ({ day }: { day: Day | string }) => {
   return <div>{day}</div>;
 };
 
-const DaysGrid = () => {
-  const { date } = useKalendar();
+const MonthGrid = ({
+  date,
+  showPreviousMonth,
+  showNextMonth,
+}: {
+  date: Date;
+  showPreviousMonth: boolean;
+  showNextMonth: boolean;
+}) => {
+  const { size } = useKalendar();
 
   const dates = useMemo(() => getDatesForMonth(date), [date]);
 
@@ -89,16 +120,33 @@ const DaysGrid = () => {
     return null;
   }, [dates]);
 
-  return [
-    ...getBlankDays(date),
-    ...dates.map((date, i) => (
-      <DayNumber
+  const smallClassName = size === "small" ? "grid__week--small" : "";
+
+  return (
+    <div style={{ flexShrink: 0 }}>
+      <Actions
         date={date}
-        isTodaysDate={todaysDateIndex === i}
-        key={date.toString()}
+        showPreviousMonth={showPreviousMonth}
+        showNextMonth={showNextMonth}
       />
-    )),
-  ];
+
+      <div className={`grid grid__week ${smallClassName}`}>
+        <WeekDays />
+      </div>
+      <div className="grid">
+        {[
+          ...getBlankDays(date),
+          ...dates.map((date, i) => (
+            <DayNumber
+              date={date}
+              isTodaysDate={todaysDateIndex === i}
+              key={date.toString()}
+            />
+          )),
+        ]}
+      </div>
+    </div>
+  );
 };
 
 const getBlankDays = (date: Date): JSX.Element[] => {
@@ -141,22 +189,43 @@ const DayNumber = ({
   );
 };
 
-const Actions = () => {
+const Actions = ({
+  date,
+  showPreviousMonth,
+  showNextMonth,
+}: {
+  date: Date;
+  showPreviousMonth: boolean;
+  showNextMonth: boolean;
+}) => {
   const { previousMonth, nextMonth, size } = useKalendar();
+
+  const getVisibility = (show: boolean) => (show ? "visible" : "hidden");
 
   return (
     <div
+      className="actions"
       style={{
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
       }}
     >
-      <Button onClick={previousMonth} aria-label="previous month" size={size}>
+      <Button
+        onClick={previousMonth}
+        aria-label="previous month"
+        size={size}
+        style={{ visibility: getVisibility(showPreviousMonth) }}
+      >
         {"←"}
       </Button>
-      <HeaderButton />
-      <Button onClick={nextMonth} aria-label="next month" size={size}>
+      <MonthHeaderButton date={date} />
+      <Button
+        onClick={nextMonth}
+        aria-label="next month"
+        size={size}
+        style={{ visibility: getVisibility(showNextMonth) }}
+      >
         {"→"}
       </Button>
     </div>
@@ -174,7 +243,10 @@ const SuggestedActions = () => {
   const props = { size };
 
   return (
-    <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+    <div
+      className="suggested-actions"
+      style={{ display: "flex", gap: 8, marginBottom: 12 }}
+    >
       <Button {...props} onClick={selectToday}>
         Today
       </Button>
@@ -188,8 +260,8 @@ const SuggestedActions = () => {
   );
 };
 
-const HeaderButton = () => {
-  const { date, size, locale } = useKalendar();
+const MonthHeaderButton = ({ date }: { date: Date }) => {
+  const { size, locale } = useKalendar();
 
   const monthHeader = capitalize(
     date.toLocaleString(locale, { month: "long" })

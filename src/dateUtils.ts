@@ -73,6 +73,29 @@ export function add(
   return newDate;
 }
 
+export function subtract(
+  date: Date = getTodaysDate(),
+  amount: number,
+  type: "day" | "days" | "month" | "months"
+): Date {
+  const newDate = new Date(date);
+
+  switch (type) {
+    case "month":
+    case "months": {
+      newDate.setMonth(newDate.getMonth() - amount);
+      break;
+    }
+    case "day":
+    case "days": {
+      newDate.setDate(newDate.getDate() - amount);
+      break;
+    }
+  }
+
+  return newDate;
+}
+
 export function areDatesTheSame(date1: Date, date2: Date): boolean {
   return date1?.getTime() === date2?.getTime();
 }
