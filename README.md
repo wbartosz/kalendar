@@ -18,3 +18,4 @@ Easy to use, non-bloated calendar utilising the Date API.
 | size                 | Calendar size                                                     | `"default" \| "small"` | `"default"`                                                                                         |
 | locale               | Preferred locale, language                                        | `Intl.LocalesArgument` | User's preferred language, usually the language of the browser UI. If not found, defaults to `"en"` |
 | showSuggestedActions | Handles visibility of "Today", "Tomorrow" and "In 2 days" buttons | `boolean`              | `false`                                                                                             |
+| displayedMonths      | Single or double month view                                       | `1 \| 2`               | `1`                                                                                                 |
